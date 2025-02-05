@@ -1,5 +1,32 @@
+<template>
+  <div id="header">
+    <h1>Welcome to the Widget Shop</h1>
+  </div>
+
+  <div id="filters">
+    <button class="filter-button" @click="filterWidgets('electronics')">Electronics</button>
+    <button class="filter-button" @click="filterWidgets('clothing')">Clothing</button>
+    <button class="filter-button" @click="filterWidgets('home')">Home</button>
+    <button class="filter-button" @click="filterWidgets('all')">All</button>
+  </div>
+
+  <div id="card-container" class="card-container">
+    <div v-if="filteredWidgets.length === 0">
+      <p>No widgets found for this category.</p>
+    </div>
+    <div v-for="widget in filteredWidgets" :key="widget.id" class="card effect">
+      <img :src="widget.image" :alt="widget.name" />
+      <h3>{{ widget.name }}</h3>
+      <p>{{ widget.description }}</p>
+      <p>Price: ${{ widget.price.toFixed(2) }}</p>
+    </div>
+  </div>
+</template>
+
 <script setup>
-const widgets = [
+import { ref, computed } from 'vue'
+
+const widgets = ref([
   {
     id: 1,
     name: 'IPhone 12 Pro Max',
@@ -82,56 +109,175 @@ const widgets = [
     image:
       'https://th.bing.com/th/id/OIP.JhrJpAuCXlNueRcS43kC4AHaHk?w=165&h=180&c=7&r=0&o=5&pid=1.7',
   },
-]
+])
 
-const cardContainer = document.getElementById('card-container')
+const selectedCategory = ref('all')
 
-function renderWidgets(widgetsArray) {
-  cardContainer.innerHTML = ''
-
-  if (widgetsArray.length === 0) {
-    cardContainer.innerHTML = '<p>No widgets found for this category.</p>'
-    return
+const filteredWidgets = computed(() => {
+  if (selectedCategory.value === 'all') {
+    return widgets.value
   }
-
-  widgetsArray.forEach((widget) => {
-    const widgetHTML = `
-      <div class="card effect">
-        <img src="${widget.image}" alt="${widget.name}">
-        <h3>${widget.name}</h3>
-        <p>${widget.description}</p>
-        <p>Price: $${widget.price.toFixed(2)}</p>
-      </div>
-    `
-    cardContainer.insertAdjacentHTML('beforeend', widgetHTML)
-  })
-}
-
-renderWidgets(widgets)
-
-const filterButtons = document.querySelectorAll('.filter-button')
-
-filterButtons.forEach((button) => {
-  button.addEventListener('click', () => {
-    const category = button.getAttribute('data-category')
-
-    const filteredWidgets = widgets.filter((widget) => widget.category === category)
-
-    renderWidgets(filteredWidgets)
-  })
+  return widgets.value.filter((widget) => widget.category === selectedCategory.value)
 })
+
+function filterWidgets(category) {
+  selectedCategory.value = category
+}
 </script>
 
-<template>
-  <div id="header">
-    <h1>Welcome to the Widget Shop</h1>
-  </div>
+<style>
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light dark;
+  --primary-background: #ffffff;
+  --primary-text: #213547;
+  --button-background: #f9f9f9;
+  --button-hover: #747bff;
+  --button-text: #213547;
+  --link-color: #646cff;
+  --link-hover: #747bff;
+  --card-text: #213547;
+  --card-width: 400px;
+  --card-height: 400px;
+}
 
-  <div id="filters">
-    <button class="filter-button" data-category="electronics">Electronics</button>
-    <button class="filter-button" data-category="clothing">Clothing</button>
-    <button class="filter-button" data-category="home">Home</button>
-  </div>
+[data-theme='dark'] {
+  --primary-background: #2c3e50;
+  --primary-text: #ecf0f1;
+  --button-background: #1a1a1a;
+  --button-hover: #646cff;
+  --button-text: #ecf0f1;
+  --link-color: #646cff;
+  --link-hover: #535bf2;
+  --card-text: #ecf0f1;
+}
 
-  <div id="card-container" class="card-container"></div>
-</template>
+body {
+  margin: 0;
+  background-color: var(--primary-background);
+  color: var(--primary-text);
+  font-family: inherit;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+#header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: var(--primary-background);
+  width: 100%;
+}
+
+h1 {
+  font-size: 2em;
+  margin: 0;
+}
+
+button {
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: var(--button-background);
+  color: var(--button-text);
+  cursor: pointer;
+  border-radius: 8px;
+  transition:
+    background-color 0.25s,
+    color 0.25s;
+}
+
+button:hover {
+  background-color: var(--button-hover);
+}
+
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  padding: 2rem;
+  margin-top: 20px;
+}
+
+.card {
+  background-color: var(--primary-background);
+  color: var(--card-text);
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: var(--card-width);
+  height: var(--card-height);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  max-height: 150px;
+  object-fit: contain;
+}
+
+.card h3 {
+  font-size: 1.2em;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card p {
+  font-size: 0.9em;
+  color: #555;
+  flex-grow: 1;
+}
+
+.card.effect:hover {
+  transform: scale(1.05) translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+#filters {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.filter-button {
+  padding: 0.6em 1.2em;
+  margin: 0.5rem;
+  background-color: var(--button-background);
+  color: var(--button-text);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.25s;
+}
+
+.filter-button:hover {
+  background-color: var(--button-hover);
+}
+
+@media (max-width: 768px) {
+  .card-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .card-container {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
