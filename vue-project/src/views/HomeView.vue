@@ -1,24 +1,24 @@
 <template>
-  <div id="header">
-    <h1>Welcome to the Widget Shop</h1>
+  <div id="header" class="header">
+    <h1 class="header__title">Welcome to the Widget Shop</h1>
   </div>
 
-  <div id="filters">
-    <button class="filter-button" @click="filterWidgets('electronics')">Electronics</button>
-    <button class="filter-button" @click="filterWidgets('clothing')">Clothing</button>
-    <button class="filter-button" @click="filterWidgets('home')">Home</button>
-    <button class="filter-button" @click="filterWidgets('all')">All</button>
+  <div id="filters" class="filters">
+    <button class="filters__button" @click="filterWidgets('electronics')">Electronics</button>
+    <button class="filters__button" @click="filterWidgets('clothing')">Clothing</button>
+    <button class="filters__button" @click="filterWidgets('home')">Home</button>
+    <button class="filters__button" @click="filterWidgets('all')">All</button>
   </div>
 
   <div id="card-container" class="card-container">
     <div v-if="filteredWidgets.length === 0">
-      <p>No widgets found for this category.</p>
+      <p class="card-container__empty-message">No widgets found for this category.</p>
     </div>
-    <div v-for="widget in filteredWidgets" :key="widget.id" class="card effect">
-      <img :src="widget.image" :alt="widget.name" />
-      <h3>{{ widget.name }}</h3>
-      <p>{{ widget.description }}</p>
-      <p>Price: ${{ widget.price.toFixed(2) }}</p>
+    <div v-for="widget in filteredWidgets" :key="widget.id" class="card card--effect">
+      <img :src="widget.image" :alt="widget.name" class="card__image" />
+      <h3 class="card__title">{{ widget.name }}</h3>
+      <p class="card__description">{{ widget.description }}</p>
+      <p class="card__price">Price: ${{ widget.price.toFixed(2) }}</p>
     </div>
   </div>
 </template>
@@ -165,7 +165,7 @@ body {
   justify-content: flex-start;
 }
 
-#header {
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -174,26 +174,27 @@ body {
   width: 100%;
 }
 
-h1 {
+.header__title {
   font-size: 2em;
   margin: 0;
 }
 
-button {
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: var(--button-background);
-  color: var(--button-text);
-  cursor: pointer;
-  border-radius: 8px;
-  transition:
-    background-color 0.25s,
-    color 0.25s;
+.filters {
+  margin: 20px 0;
+  text-align: center;
 }
 
-button:hover {
+.filters__button {
+  padding: 0.6em 1.2em;
+  margin: 0.5rem;
+  background-color: var(--button-background);
+  color: var(--button-text);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.25s;
+}
+
+.filters__button:hover {
   background-color: var(--button-hover);
 }
 
@@ -219,7 +220,7 @@ button:hover {
   justify-content: space-between;
 }
 
-.card img {
+.card__image {
   max-width: 100%;
   height: auto;
   border-radius: 8px;
@@ -228,7 +229,7 @@ button:hover {
   object-fit: contain;
 }
 
-.card h3 {
+.card__title {
   font-size: 1.2em;
   margin-bottom: 0.5rem;
   overflow: hidden;
@@ -236,13 +237,18 @@ button:hover {
   white-space: nowrap;
 }
 
-.card p {
+.card__description {
   font-size: 0.9em;
   color: #555;
   flex-grow: 1;
 }
 
-.card.effect:hover {
+.card__price {
+  font-size: 1em;
+  color: #333;
+}
+
+.card--effect:hover {
   transform: scale(1.05) translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   transition:
@@ -250,23 +256,10 @@ button:hover {
     box-shadow 0.3s ease;
 }
 
-#filters {
-  margin: 20px 0;
+.card-container__empty-message {
+  font-size: 1.2em;
+  color: #888;
   text-align: center;
-}
-
-.filter-button {
-  padding: 0.6em 1.2em;
-  margin: 0.5rem;
-  background-color: var(--button-background);
-  color: var(--button-text);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.25s;
-}
-
-.filter-button:hover {
-  background-color: var(--button-hover);
 }
 
 @media (max-width: 768px) {
